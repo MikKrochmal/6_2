@@ -56,6 +56,7 @@ class Main {
                         break;
                     default:
                         return;
+                        
                 }
             } catch (IOException e) {
 
@@ -119,6 +120,7 @@ class Main {
             throw new WrongAge();
         // scan.nextLine();
         // System.out.println("Podaj datę urodzenia DD-MM-YyYY");
+        //aaaaaaaa
         var date = ReadDateOfBirth();
         if (!date.matches("\\d{2}-\\d{2}-\\d{4}"))
             throw new WrongDateOfBirth("Data urodzenia nie jest w formacie DD-MM-YYYY");
