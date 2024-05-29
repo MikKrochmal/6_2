@@ -17,59 +17,85 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date; 
+import java.util.Date;
 
-class WrongStudentName extends Exception { }
-class WrongAge extends Exception { }
+class WrongStudentName extends Exception {
+}
+
+class WrongAge extends Exception {
+}
+
 class WrongDateOfBirth extends Exception {
     public WrongDateOfBirth(String message) {
         super(message);
     }
 }
+
+class WrongMenuChoice extends Exception {
+    public WrongMenuChoice(String message){
+        super(message);
+    }
+}
+
 class Main {
     public static Scanner scan = new Scanner(System.in);
 
     public static void main(String[] args) {
-        while(true) {
+        while (true) {
             try {
                 int ex = menu();
-                switch(ex) {
-                    case 1: exercise1(); break;
-                    case 2: exercise2(); break;
-                    case 3: exercise3(); break;
-                    default: return;
+                switch (ex) {
+                    case 1:
+                        exercise1();
+                        break;
+                    case 2:
+                        exercise2();
+                        break;
+                    case 3:
+                        exercise3();
+                        break;
+                    default:
+                        return;
                 }
-            } catch(IOException e) {
+            } catch (IOException e) {
 
-            } catch(WrongStudentName e) {
+            } catch (WrongStudentName e) {
                 System.out.println("Błędne imie studenta!");
-            } catch(WrongAge e) {
+            } catch (WrongAge e) {
                 System.out.println("Błędny wiek studenta!");
-            } catch(WrongDateOfBirth e) {
-                System.out.println("Błędna data urodzenia studenta!"+ e.getMessage());
+            } catch (WrongDateOfBirth e) {
+                System.out.println("Błędna data urodzenia studenta! " + e.getMessage());
+            } catch (WrongMenuChoice e) {
+                System.out.println("Błędny wybór z menu! " + e.getMessage());
             }
-            
+
         }
     }
 
-    public static int menu() {
+    public static int menu() throws WrongMenuChoice{
         System.out.println("Wciśnij:");
         System.out.println("1 - aby dodać studenta");
         System.out.println("2 - aby wypisać wszystkich studentów");
         System.out.println("3 - aby wyszukać studenta po imieniu");
         System.out.println("0 - aby wyjść z programu");
-        return scan.nextInt();
+        String input = scan.nextLine();
+        if(!input.matches ("[0-3]")){
+            throw new WrongMenuChoice ("Wybierz poprawny numer z menu");
+        }
+        
+        return Integer.parseInt(input);
     }
 
     public static String ReadName() throws WrongStudentName {
         scan.nextLine();
         System.out.println("Podaj imie: ");
         String name = scan.nextLine();
-        if(name.contains(" "))
+        if (name.contains(" "))
             throw new WrongStudentName();
 
         return name;
     }
+
     public static String ReadDateOfBirth() throws WrongDateOfBirth {
         scan.nextLine();
         System.out.println("Podaj datę urodzenia DD-MM-YYYY");
@@ -89,19 +115,19 @@ class Main {
         var name = ReadName();
         System.out.println("Podaj wiek: ");
         var age = scan.nextInt();
-        if(age < 0 || age > 100)
+        if (age < 0 || age > 100)
             throw new WrongAge();
-        scan.nextLine();
-        System.out.println("Podaj datę urodzenia DD-MM-YYYY");
+        // scan.nextLine();
+        // System.out.println("Podaj datę urodzenia DD-MM-YyYY");
         var date = ReadDateOfBirth();
-        if(!date.matches("\\d{2}-\\d{2}-\\d{4}"))
+        if (!date.matches("\\d{2}-\\d{2}-\\d{4}"))
             throw new WrongDateOfBirth("Data urodzenia nie jest w formacie DD-MM-YYYY");
         (new Service()).addStudent(new Student(name, age, date));
     }
-    
+
     public static void exercise2() throws IOException {
         var students = (new Service()).getStudents();
-        for(Student current : students) {
+        for (Student current : students) {
             System.out.println(current.ToString());
         }
     }
@@ -111,7 +137,7 @@ class Main {
         System.out.println("Podaj imie: ");
         var name = scan.nextLine();
         var wanted = (new Service()).findStudentByName(name);
-        if(wanted == null)
+        if (wanted == null)
             System.out.println("Nie znaleziono...");
         else {
             System.out.println("Znaleziono: ");
