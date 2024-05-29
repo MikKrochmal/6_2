@@ -21,8 +21,11 @@ import java.util.Date;
 
 class WrongStudentName extends Exception { }
 class WrongAge extends Exception { }
-class WrongDateOfBirth extends Exception { }
-
+class WrongDateOfBirth extends Exception {
+    public WrongDateOfBirth(String message) {
+        super(message);
+    }
+}
 class Main {
     public static Scanner scan = new Scanner(System.in);
 
@@ -43,7 +46,7 @@ class Main {
             } catch(WrongAge e) {
                 System.out.println("Błędny wiek studenta!");
             } catch(WrongDateOfBirth e) {
-                System.out.println("Błędna data urodzenia studenta!");
+                System.out.println("Błędna data urodzenia studenta!"+ e.getMessage());
             }
             
         }
@@ -67,6 +70,20 @@ class Main {
 
         return name;
     }
+    public static String ReadDateOfBirth() throws WrongDateOfBirth {
+        scan.nextLine();
+        System.out.println("Podaj datę urodzenia DD-MM-YYYY");
+        String date = scan.nextLine();
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        dateFormat.setLenient(false); // Set lenient to false for strict parsing
+        try {
+            dateFormat.parse(date);
+        } catch (java.text.ParseException e) {
+            throw new WrongDateOfBirth("Data urodzenia nie jest w formacie DD-MM-YYYY");
+        }
+        return date;
+    }
 
     public static void exercise1() throws IOException, WrongStudentName, WrongAge, WrongDateOfBirth {
         var name = ReadName();
@@ -75,10 +92,10 @@ class Main {
         if(age < 0 || age > 100)
             throw new WrongAge();
         scan.nextLine();
-        System.out.println("Podaj datę urodzenia DD-MM-YYY");
-        var date = scan.nextLine();
+        System.out.println("Podaj datę urodzenia DD-MM-YYYY");
+        var date = ReadDateOfBirth();
         if(!date.matches("\\d{2}-\\d{2}-\\d{4}"))
-            throw new WrongDateOfBirth();
+            throw new WrongDateOfBirth("Data urodzenia nie jest w formacie DD-MM-YYYY");
         (new Service()).addStudent(new Student(name, age, date));
     }
     
